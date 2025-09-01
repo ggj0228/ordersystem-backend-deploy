@@ -11,14 +11,9 @@ import java.util.Map;
 public class HealthChbeckContorller {
 
     @GetMapping("/health")
-    public ResponseEntity<?> probe() {
+    public String probe() {
         // 여기서는 절대 DB 호출하지 말 것 (빠른 200 응답 필요)
-        return ResponseEntity.ok(
-                Map.of(
-                        "status", "UP",
-                        "time", OffsetDateTime.now().toString()
-                )
-        );
+        return "Ok";
     }
 }
 
