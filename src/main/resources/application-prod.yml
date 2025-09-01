@@ -6,11 +6,11 @@ spring:
     activate:
       on-profile: prod
   redis:
-    host: localhost
+    host: xxxxx
     port: 6379
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://localhost:3301/ordersystem
+    url: jdbc:mariadb://xxxxx:3306/ordersystem
     username: root
     password: 1234
   jpa:
