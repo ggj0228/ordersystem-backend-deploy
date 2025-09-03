@@ -1,0 +1,58 @@
+# docker-compose 스크립트 문법에 대한 버전
+version: '3.8'
+services:
+  mydb:
+    image: mariadb
+    environment:
+      - MYSQL_ROOT_PASSWORD=1234
+      - MARIADB_DATABASE=ordersystem
+    # 도커 컴포즈 네트워크 내에서는 외부포트 제거 가능
+    # ports:
+    #   - "3309:3306"
+  myredis:
+    image: redis
+    # ports:
+    #   - "6388:6379"
+  myordersystem:
+    image: wooyoungking/ordersystem:latest
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mydb
+    restart: on-failure:10
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mariadb://mydb:3306/ordersystem
+      - SPRING_REDIS_HOST=myredis
+      - JWT_SECRETKEYAT=YmV5b25kYWNjZXNzdG9rZW5zZWNyZXRrZXliZXlvbmRhY2Nlc3N0b2tlbnNlY3JldGtleWJleW9uZGFjY2Vzc3Rva2Vuc2VjcmV0a2V5
+      - JWT_SECRETKEYRT=YmV5b25kYWNjZXNzdG9rZW5zZWNyZXRrZXliZXlvbmRhY2Nlc3N0b2tlbnNlY3JldGtleWJleW9uZGFjY2Vzc3Rva2Vuc2VjcmV0a2V5
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=1234
+    
+
+# services:              # 여러 컨테이너(서비스)를 정의하는 블록
+#   db:                  # 서비스 이름(db) → 내부 네트워크에서 'db' 또는 container_name으로 접근 가능
+#     image: mariadb:11  # 사용할 이미지 (MariaDB 11 버전)
+#     container_name: mariadb  # 컨테이너 이름 고정 (docker ps에서 보이는 이름)
+#     environment:       # 환경 변수 → mariadb 이미지에서 DB 초기 설정값
+#       MARIADB_DATABASE: ordersystem   # 처음 생성할 DB 이름
+#       MARIADB_USER: app               # 일반 사용자 계정
+#       MARIADB_PASSWORD: secretpw      # 그 계정의 비밀번호
+#       MARIADB_ROOT_PASSWORD: rootpw   # root 계정의 비밀번호
+#     volumes:
+#       - dbdata:/var/lib/mysql  # 호스트에 'dbdata'라는 볼륨을 만들고 DB 데이터를 영구 저장
+
+#   app:                 # 서비스 이름(app) → 내부 네트워크에서 'app'으로도 접근 가능
+#     image: ordersystem:v1.0   # 사용할 이미지 (주인님이 빌드한 Spring Boot 앱)
+#     container_name: my-ordersystem # 컨테이너 이름 고정
+#     ports:
+#       - "8080:8080"    # 호스트의 8080 → 컨테이너의 8080으로 연결 (브라우저에서 localhost:8080 접속 가능)
+#     environment:       # 스프링 앱 실행 시 환경 변수 주입
+#       SPRING_DATASOURCE_URL: jdbc:mariadb://mariadb:3306/ordersystem
+#         # → DB 주소: 컨테이너 이름 'mariadb', 포트 3306 (내부포트 직통)
+#       SPRING_DATASOURCE_USERNAME: app
+#       SPRING_DATASOURCE_PASSWORD: secretpw
+#     depends_on:
+#       - db             # db 컨테이너가 먼저 뜨도록 의존성 설정 (DB 준비 전 실행은 막지 않음)
+
+# volumes:
+#   dbdata:              # 위에서 선언한 볼륨 이름 (컨테이너 내려가도 데이터 유지)
